@@ -1,4 +1,7 @@
+import { metadata } from "@/metadata";
 import MainHeader from "@/components/MainHeader";
+
+export { metadata };
 
 export default function Home() {
   return (
