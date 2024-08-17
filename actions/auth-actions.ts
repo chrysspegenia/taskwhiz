@@ -2,8 +2,16 @@
 
 type LoginState = {
   data?: {
-    email: string;
-    password: string;
+    status: {
+      data: {
+        user: {
+          id: number;
+          email: string;
+          first_name: string;
+          last_name: string;
+        };
+      };
+    };
   };
   authorization?: string;
   errors?: {
@@ -45,9 +53,6 @@ export async function loginUserAction(
 
     const data = await response.json();
     const authorization = response.headers.get("Authorization") || undefined;
-
-    // Save data in state management or handle side effects here
-    // Example: update some global state or local state with the response data
 
     return { data, authorization };
   } catch (error: unknown) {
