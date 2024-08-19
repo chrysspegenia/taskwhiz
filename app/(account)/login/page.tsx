@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { useFormState } from "react-dom";
+import { useEffect } from "react";
 import { loginUserAction } from "@/actions/auth-actions";
+import { useDispatch } from "react-redux";
+import { updateUser } from "@/state/user/userSlice";
 
 const INITIAL_STATE = {
   email: "",
@@ -12,12 +15,23 @@ const INITIAL_STATE = {
 };
 
 export default function LoginPage() {
+  const dispatch = useDispatch();
   const [formState, formAction, pending] = useFormState(
     loginUserAction,
     INITIAL_STATE
   );
 
-  console.log(formState);
+  useEffect(() => {
+    if (formState.data) {
+      const user = formState.data.status.data.user;
+      if (user) {
+        dispatch(updateUser(user));
+        console.log(`from redux:`, user);
+      } else {
+        console.error("User data not found in formState");
+      }
+    }
+  }, [formState.data, dispatch]);
 
   return (
     <main className="grid grid-cols-1 md:grid-cols-[35%_1fr] min-h-screen">
