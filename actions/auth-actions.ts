@@ -1,4 +1,5 @@
 "use server";
+import { API_URL } from "@/lib/constants";
 
 type LoginState = {
   data?: {
@@ -36,7 +37,7 @@ export async function loginUserAction(
   if (Object.keys(errors).length > 0) return { errors };
 
   try {
-    const response = await fetch(`${process.env.API_URL}/login`, {
+    const response = await fetch(`${API_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
