@@ -23,7 +23,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (formState.data) {
-      const user = formState.data.status.data.user;
+      const user = formState.data.user;
       if (user) {
         dispatch(updateUser(user));
         console.log(`from redux:`, user);
@@ -52,11 +52,6 @@ export default function LoginPage() {
               type="text"
               className="text-gray-700 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             ></input>
-            {formState?.errors?.email && (
-              <p className="mt-2 text-sm text-red-500">
-                {formState.errors.email}
-              </p>
-            )}
           </div>
 
           <div>
@@ -68,18 +63,7 @@ export default function LoginPage() {
               type="password"
               className="text-gray-700 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             ></input>
-            {formState?.errors?.password && (
-              <p className="mt-2 text-sm text-red-500">
-                {formState.errors.password}
-              </p>
-            )}
           </div>
-
-          {formState?.errors?.credentials && (
-            <p className="mt-2 text-center text-sm text-red-500">
-              {formState.errors.credentials}
-            </p>
-          )}
 
           <button
             type="submit"
@@ -90,6 +74,24 @@ export default function LoginPage() {
           >
             {pending ? "Loading..." : "Login"}
           </button>
+
+          {formState?.errors?.email && (
+            <p className="mt-2 text-sm text-red-500">
+              {formState.errors.email}
+            </p>
+          )}
+
+          {formState?.errors?.password && (
+            <p className="mt-2 text-sm text-red-500">
+              {formState.errors.password}
+            </p>
+          )}
+
+          {formState?.errors?.credentials && (
+            <p className="mt-2 text-center text-sm text-red-500">
+              {formState.errors.credentials}
+            </p>
+          )}
 
           <Link
             href={"password_reset"}
