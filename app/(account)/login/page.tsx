@@ -34,7 +34,7 @@ export default function LoginPage() {
   }, [formState.data, dispatch]);
 
   return (
-    <main className="grid grid-cols-1 md:grid-cols-[35%_1fr] min-h-screen">
+    <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[35%_1fr] min-h-screen">
       <header className="absolute top-0 left-0 px-6 py-4 text-gray-700">
         <Link href="/">TaskWhiz</Link>
       </header>
