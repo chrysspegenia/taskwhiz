@@ -3,15 +3,11 @@ import { API_URL } from "@/lib/constants";
 
 type LoginState = {
   data?: {
-    status: {
-      data: {
-        user: {
-          id: number;
-          email: string;
-          first_name: string;
-          last_name: string;
-        };
-      };
+    user: {
+      id: number;
+      email: string;
+      first_name: string;
+      last_name: string;
     };
   };
   authorization?: string;
