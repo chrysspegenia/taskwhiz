@@ -91,18 +91,20 @@ export default function LoginPage() {
             {pending ? "Loading..." : "Login"}
           </button>
 
-          <Link
-            href={"password_reset"}
-            className="block text-center text-blue-600 hover:underline"
-          >
-            Forgot your password?
-          </Link>
-          <Link
-            href={"registration"}
-            className="block text-center text-blue-600 hover:underline"
-          >
-            Create an account
-          </Link>
+          <div className="flex flex-col md:flex-row justify-between">
+            <Link
+              href={"password_reset"}
+              className="block text-center text-blue-600 hover:underline text-sm"
+            >
+              Forgot your password?
+            </Link>
+            <Link
+              href={"registration"}
+              className="mt-2 md:mt-0 block text-center text-blue-600 hover:underline text-sm"
+            >
+              Create an account
+            </Link>
+          </div>
         </form>
       </section>
 
