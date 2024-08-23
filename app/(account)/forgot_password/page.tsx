@@ -16,8 +16,9 @@ export default function ForgotPasswordPage() {
           </h1>
 
           <p>
-            Enter your email, and we'll send you instructions to reset your
-            password.
+            {/* char code for apostrophe */}
+            Enter your email, and we&rsquo;ll send you instructions to reset
+            your password.
           </p>
 
           <div>
