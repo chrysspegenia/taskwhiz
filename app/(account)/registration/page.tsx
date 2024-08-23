@@ -144,20 +144,10 @@ export default function RegistrationPage() {
       </section>
 
       <section className="flex items-center justify-center p-8 bg-gray-100">
-        <form className="w-full max-w-sm space-y-6" onSubmit={handleSubmit}>
-          {isError && (
-            <p className="mt-2 text-center text-lg text-red-500">
-              Registration failed. {error.message}
-            </p>
-          )}
-
-          {isSuccess && (
-            <p className="mt-2 text-center text-lg text-green-500">
-              Account created successfully! <br></br>
-              Welcome to TaskWhiz!
-            </p>
-          )}
-
+        <form
+          className="w-full max-w-sm space-y-6 relative"
+          onSubmit={handleSubmit}
+        >
           <h1 className="text-2xl font-bold text-gray-700">
             Create an account
           </h1>
@@ -342,6 +332,18 @@ export default function RegistrationPage() {
           >
             Already have an account?
           </Link>
+
+          {isError && (
+            <p className="text-gray-800 text-center text-md font-bold border-2 border-red-500 bg-red-300 px-4 py-1 absolute rounded-lg w-full -bottom-11">
+              Registration failed. {error.message}
+            </p>
+          )}
+
+          {isSuccess && (
+            <p className="text-gray-800 text-center text-md font-bold border-2 border-green-500 bg-green-300 px-4 py-1 absolute rounded-lg w-full -bottom-11">
+              Welcome aboard! Your account is ready.
+            </p>
+          )}
         </form>
       </section>
     </main>
