@@ -3,6 +3,9 @@ import Link from "next/link";
 import { API_URL } from "@/lib/constants";
 import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
+import { mirage } from "ldrs";
+
+mirage.register();
 
 type NewUser = {
   email: string;
@@ -326,7 +329,11 @@ export default function RegistrationPage() {
               isPending ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
             }`}
           >
-            {isPending ? "Loading..." : "Create account"}
+            {isPending ? (
+              <l-mirage size="60" speed="2.5" color="rgb(37 99 235)"></l-mirage>
+            ) : (
+              "Create account"
+            )}
           </button>
 
           <Link
