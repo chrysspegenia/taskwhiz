@@ -91,7 +91,6 @@ export default function RegistrationPage() {
     const password = e.target.value;
 
     const updatedReqs = {
-      password: password,
       hasEightChars: password.length >= 8,
       hasUpperCase: /[A-Z]/.test(password),
       hasLowerCase: /[a-z]/.test(password),
