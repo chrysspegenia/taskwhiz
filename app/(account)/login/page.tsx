@@ -93,7 +93,7 @@ export default function LoginPage() {
 
           <div className="flex flex-col md:flex-row justify-between">
             <Link
-              href={"password_reset"}
+              href={"forgot_password"}
               className="block text-center text-blue-600 hover:underline text-sm"
             >
               Forgot your password?
