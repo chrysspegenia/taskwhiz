@@ -31,7 +31,6 @@ export default function RegistrationPage() {
   });
 
   const [passwordReqs, setPasswordReqs] = useState({
-    password: "",
     hasEightChars: false,
     hasUpperCase: false,
     hasLowerCase: false,
@@ -78,7 +77,6 @@ export default function RegistrationPage() {
 
       // Reset password requirements and password match state
       setPasswordReqs({
-        password: "",
         hasEightChars: false,
         hasUpperCase: false,
         hasLowerCase: false,
