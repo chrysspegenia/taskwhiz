@@ -17,8 +17,14 @@ type RegisterResponse = {
   data?: any;
 };
 
+//Todo
+//handle error message
+//success message
+//validations
+
 export default function ForgotPasswordPage() {
   const [userEmail, setUserEmail] = useState("");
+  const [revealMessage, setRevealMessage] = useState(true);
 
   const { mutate, isPending, isError, isSuccess, error } = useMutation<
     RegisterResponse,
@@ -37,14 +43,10 @@ export default function ForgotPasswordPage() {
       });
 
       if (!response.ok) {
-        throw new Error("Your email does'nt seem to match any account.");
+        throw new Error("Your email doesn't seem to match any account.");
       }
 
-      console.log(response);
       return response.json();
-    },
-    onSuccess: () => {
-      setUserEmail("");
     },
   });
 
@@ -52,7 +54,12 @@ export default function ForgotPasswordPage() {
     setUserEmail(e.target.value);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  //Indicated to types to allow form submition and onClick for resend email click event.
+  const handleSubmit = (
+    event:
+      | React.FormEvent<HTMLFormElement>
+      | React.MouseEvent<HTMLSpanElement, MouseEvent>
+  ) => {
     event.preventDefault();
 
     if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(userEmail)) {
@@ -67,57 +74,91 @@ export default function ForgotPasswordPage() {
       <MainHeader />
 
       <section className="w-full flex items-center justify-center p-8 bg-gray-300">
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-3 w-full md:w-3/4 lg:w-1/3 bg-gray-100 p-6 rounded-lg"
-        >
-          <h1 className="text-center text-md md:text-left md:text-2xl font-bold text-gray-700 border-b-2 border-gray-500 pb-4">
-            Forgot your password? No Worries!
-          </h1>
+        {!isSuccess && (
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-3 w-full md:w-1/2 lg:w-1/3 bg-gray-100 p-6 rounded-lg"
+          >
+            <h1 className="text-center text-md md:text-left md:text-2xl font-bold text-gray-700 border-b-2 border-gray-500 pb-4">
+              Forgot your password? No Worries!
+            </h1>
 
-          <p>
-            {/* char code for apostrophe */}
-            Enter your email, and we&rsquo;ll send you instructions to reset
-            your password.
-          </p>
+            <p>
+              {/* char code for apostrophe */}
+              Enter your email, and we&rsquo;ll send you instructions to reset
+              your password.
+            </p>
 
-          <div>
-            <input
-              name="email"
-              type="email"
-              placeholder="Email"
-              value={userEmail}
-              onChange={handleChange}
-              className="text-gray-700 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            ></input>
-          </div>
+            <div>
+              <input
+                name="email"
+                type="email"
+                placeholder="Email"
+                value={userEmail}
+                onChange={handleChange}
+                className="text-gray-700 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              ></input>
+            </div>
 
-          <div className="w-full flex justify-between font-bold">
-            <Link
-              href={"login"}
-              className="`w-1/2 md:w-1/4 px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 text-center"
+            <div className="w-full flex justify-between font-bold">
+              <Link
+                href={"login"}
+                className="`w-1/2 md:w-1/4 px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 text-center"
+              >
+                Cancel
+              </Link>
+              <button
+                type="submit"
+                disabled={isPending}
+                className={`w-1/2 md:w-1/4 px-4 py-2 rounded-lg text-white ${
+                  isPending ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+                }`}
+              >
+                {isPending ? (
+                  <l-mirage
+                    size="60"
+                    speed="2.5"
+                    color="rgb(37 99 235)"
+                  ></l-mirage>
+                ) : (
+                  "Submit"
+                )}
+              </button>
+            </div>
+          </form>
+        )}
+        {isSuccess && (
+          <div className="flex flex-col items-center gap-3 w-full md:w-1/2 lg:w-1/3 text-center bg-gray-100 p-6 rounded-lg">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 640 512"
+              className="w-24"
             >
-              Cancel
-            </Link>
-            <button
-              type="submit"
-              disabled={isPending}
-              className={`w-1/2 md:w-1/4 px-4 py-2 rounded-lg text-white ${
-                isPending ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
-              }`}
-            >
-              {isPending ? (
-                <l-mirage
-                  size="60"
-                  speed="2.5"
-                  color="rgb(37 99 235)"
-                ></l-mirage>
-              ) : (
-                "Submit"
-              )}
-            </button>
+              <path
+                fill="#20d958"
+                d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0l57.4-43c23.9-59.8 79.7-103.3 146.3-109.8l13.9-10.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176 0 384c0 35.3 28.7 64 64 64l296.2 0C335.1 417.6 320 378.5 320 336c0-5.6 .3-11.1 .8-16.6l-26.4 19.8zM640 336a144 144 0 1 0 -288 0 144 144 0 1 0 288 0zm-76.7-43.3c6.2 6.2 6.2 16.4 0 22.6l-72 72c-6.2 6.2-16.4 6.2-22.6 0l-40-40c-6.2-6.2-6.2-16.4 0-22.6s16.4-6.2 22.6 0L480 353.4l60.7-60.7c6.2-6.2 16.4-6.2 22.6 0z"
+              />
+            </svg>
+            <div className="text-lg font-bold">
+              Password Reset Instructions Sent
+            </div>
+            <p className="py-4 border-t-2 border-gray-700">
+              An email has been sent to
+              <span className="text-green-500 font-bold pl-1">{userEmail}</span>
+              . Please check your inbox and follow the link provided to complete
+              the process.
+            </p>
+            <p className="pt-4 border-t-2 border-gray-700 text-sm">
+              If you did not receive the email, you can
+              <span
+                onClick={handleSubmit}
+                className="text-blue-600 cursor-pointer hover:border-b-2 hover:border-blue-700 pl-1"
+              >
+                resend the reset instructions.
+              </span>
+            </p>
           </div>
-        </form>
+        )}
       </section>
     </main>
   );
