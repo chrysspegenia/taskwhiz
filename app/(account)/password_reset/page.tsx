@@ -33,7 +33,8 @@ export default function PasswordResetPage() {
     hasSpecialChar: false,
   });
 
-  const [isPasswordMatch, setIsPasswordMatch] = useState(false);
+  const [isPasswordMatch, setIsPasswordMatch] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>("");
 
   useEffect(() => {
     console.log(resetPasswordToken);
@@ -106,12 +107,14 @@ export default function PasswordResetPage() {
         /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
       if (!passwordRegex.test(formValues.password)) {
-        console.log("Password does not meet requirements.");
+        setErrorMessage("Password does not meet the security requirements.");
         return;
       }
 
       if (formValues.password_confirmation !== formValues.password) {
-        console.log("Passwords do not match");
+        setErrorMessage(
+          "Passwords do not match. Please ensure both password fields are identical."
+        );
         return;
       }
 
@@ -136,6 +139,8 @@ export default function PasswordResetPage() {
           <p>
             Always keep your password private and never share it with anyone.
           </p>
+
+          {errorMessage && <div className="text-red-500">{errorMessage}</div>}
 
           <div>
             <label htmlFor="password" className="block text-gray-600">
