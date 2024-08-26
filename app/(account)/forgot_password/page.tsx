@@ -43,7 +43,9 @@ export default function ForgotPasswordPage() {
       });
 
       if (!response.ok) {
-        throw new Error("Your email doesn't seem to match any account.");
+        throw new Error(
+          "We couldn't find an account associated with that email address. Please check the email and try again."
+        );
       }
 
       return response.json();
@@ -88,6 +90,12 @@ export default function ForgotPasswordPage() {
               Enter your email, and we&rsquo;ll send you instructions to reset
               your password.
             </p>
+
+            {isError && (
+              <div className="text-red-500">
+                {error?.message || "An error occurred. Please try again."}
+              </div>
+            )}
 
             <div>
               <input
