@@ -1,8 +1,12 @@
 "use client";
 import MainHeader from "@/components/MainHeader";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function PasswordResetPage() {
+  const searchParams = useSearchParams();
+  const resetPasswordToken = searchParams.get("reset_password_token");
+
   const [formValues, setFormValues] = useState({
     password: "",
     password_confirmation: "",
@@ -17,6 +21,10 @@ export default function PasswordResetPage() {
   });
 
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
+
+  useEffect(() => {
+    console.log(resetPasswordToken);
+  }, [resetPasswordToken]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
