@@ -4,7 +4,7 @@ import Link from "next/link";
 import MainHeader from "@/components/MainHeader";
 import { useMutation } from "@tanstack/react-query";
 import { API_URL } from "@/lib/constants";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { mirage } from "ldrs";
 
 mirage.register();
@@ -19,9 +19,9 @@ type RegisterResponse = {
 
 export default function ForgotPasswordPage() {
   const [userEmail, setUserEmail] = useState("");
-  const [invalidEmailFormat, setInvalidEmailFormat] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const { mutate, isPending, isError, isSuccess, error } = useMutation<
+  const { mutate, isPending, isSuccess } = useMutation<
     RegisterResponse,
     Error,
     UserEmail
@@ -39,46 +39,49 @@ export default function ForgotPasswordPage() {
 
       if (!response.ok) {
         throw new Error(
-          "We couldn't find an account associated with that email address. Please check the email and try again."
+          "We couldn't find an account associated with that email address. Please double-check the email and try again."
         );
       }
 
       return response.json();
     },
     onSuccess: () => {
-      setInvalidEmailFormat(false);
+      setErrorMessage(null);
     },
     onError: (error: Error) => {
-      setInvalidEmailFormat(false);
+      setErrorMessage(error.message || "An error occurred. Please try again.");
     },
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setUserEmail(e.target.value);
-  };
+    setErrorMessage(null); // Clear the error message when the user starts typing
+  }, []);
 
-  //Indicated two types to allow form submition and onClick for resend email click event.
-  const handleSubmit = (
-    event:
-      | React.FormEvent<HTMLFormElement>
-      | React.MouseEvent<HTMLSpanElement, MouseEvent>
-  ) => {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    (
+      event:
+        | React.FormEvent<HTMLFormElement>
+        | React.MouseEvent<HTMLSpanElement, MouseEvent>
+    ) => {
+      event.preventDefault();
 
-    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(userEmail)) {
-      setInvalidEmailFormat(true);
-      return;
-    }
+      if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(userEmail)) {
+        setErrorMessage("Please enter a valid email address.");
+        return;
+      }
 
-    mutate(userEmail);
-  };
+      mutate(userEmail);
+    },
+    [userEmail, mutate]
+  );
 
   return (
     <main className="grid grid-cols-1 grid-rows-[8%_1fr]  min-h-screen bg-gray-100 text-gray-700">
       <MainHeader />
 
       <section className="w-full flex items-center justify-center p-8 bg-gray-300">
-        {!isSuccess && (
+        {!isSuccess ? (
           <form
             onSubmit={handleSubmit}
             className="flex flex-col gap-3 w-full md:w-1/2 lg:w-1/3 bg-gray-100 p-6 rounded-lg"
@@ -88,24 +91,12 @@ export default function ForgotPasswordPage() {
             </h1>
 
             <p>
-              {/* char code for apostrophe */}
               Enter your email, and we&rsquo;ll send you instructions to reset
               your password.
             </p>
 
-            {/* displays when the user submits blank input or non-email format */}
-            {invalidEmailFormat && (
-              <div className="text-red-500">
-                Please enter a valid email address.
-              </div>
-            )}
-
-            {/* displays on error return from mutaion function */}
-            {isError && (
-              <div className="text-red-500">
-                {error?.message || "An error occurred. Please try again."}
-              </div>
-            )}
+            {/* Display error message */}
+            {errorMessage && <div className="text-red-500">{errorMessage}</div>}
 
             <div>
               <input
@@ -144,8 +135,7 @@ export default function ForgotPasswordPage() {
               </button>
             </div>
           </form>
-        )}
-        {isSuccess && (
+        ) : (
           <div className="flex flex-col items-center gap-3 w-full md:w-1/2 lg:w-1/3 text-center bg-gray-100 p-6 rounded-lg">
             <svg
               xmlns="http://www.w3.org/2000/svg"
