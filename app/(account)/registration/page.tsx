@@ -211,7 +211,7 @@ export default function RegistrationPage() {
               }`}
             />
 
-            <div className="peer-focus:mt-6 peer-focus:py-2 peer-focus:max-h-56 md:peer-focus:max-h-48 max-h-0 delay-300 transition-all ease-in-out overflow-hidden w-full rounded-lg bg-gray-500 px-4 text-sm">
+            <div className="peer-focus:mt-6 peer-focus:py-2 peer-focus:max-h-56 md:peer-focus:max-h-48 max-h-0 delay-300 transition-all ease-in overflow-hidden w-full rounded-lg bg-gray-500 px-4 text-sm">
               <strong>Password requirements:</strong>
               <p
                 className={`flex items-center justify-start pl-2 ${
