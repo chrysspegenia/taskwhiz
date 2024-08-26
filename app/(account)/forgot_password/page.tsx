@@ -17,14 +17,9 @@ type RegisterResponse = {
   data?: any;
 };
 
-//Todo
-//handle error message
-//success message
-//validations
-
 export default function ForgotPasswordPage() {
   const [userEmail, setUserEmail] = useState("");
-  const [revealMessage, setRevealMessage] = useState(true);
+  const [invalidEmailFormat, setInvalidEmailFormat] = useState(false);
 
   const { mutate, isPending, isError, isSuccess, error } = useMutation<
     RegisterResponse,
@@ -50,13 +45,19 @@ export default function ForgotPasswordPage() {
 
       return response.json();
     },
+    onSuccess: () => {
+      setInvalidEmailFormat(false);
+    },
+    onError: (error: Error) => {
+      setInvalidEmailFormat(false);
+    },
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserEmail(e.target.value);
   };
 
-  //Indicated to types to allow form submition and onClick for resend email click event.
+  //Indicated two types to allow form submition and onClick for resend email click event.
   const handleSubmit = (
     event:
       | React.FormEvent<HTMLFormElement>
@@ -65,6 +66,7 @@ export default function ForgotPasswordPage() {
     event.preventDefault();
 
     if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(userEmail)) {
+      setInvalidEmailFormat(true);
       return;
     }
 
@@ -91,6 +93,14 @@ export default function ForgotPasswordPage() {
               your password.
             </p>
 
+            {/* displays when the user submits blank input or non-email format */}
+            {invalidEmailFormat && (
+              <div className="text-red-500">
+                Please enter a valid email address.
+              </div>
+            )}
+
+            {/* displays on error return from mutaion function */}
             {isError && (
               <div className="text-red-500">
                 {error?.message || "An error occurred. Please try again."}
