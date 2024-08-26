@@ -40,7 +40,7 @@ export default function PasswordResetPage() {
     console.log(resetPasswordToken);
   }, [resetPasswordToken]);
 
-  const { mutate, isPending, isSuccess } = useMutation<
+  const { mutate, isPending, isSuccess, error } = useMutation<
     RegisterResponse,
     Error,
     UserPasswordParams
@@ -58,19 +58,25 @@ export default function PasswordResetPage() {
         }),
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
         throw new Error(
-          "We couldn't find an account associated with that email address. Please double-check the email and try again."
+          result.message ||
+            "Your session has expired. Please request a new password reset link."
         );
       }
 
-      return response.json();
+      return result;
     },
     onSuccess: () => {
-      console.log("Succesfully changed password");
+      setFormValues({
+        password: "",
+        password_confirmation: "",
+      });
     },
     onError: (error: Error) => {
-      console.log(error.message || "An error occurred. Please try again.");
+      setErrorMessage(error.message || "An error occurred. Please try again.");
     },
   });
 
