@@ -116,13 +116,16 @@ export default function RegistrationPage() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
     if (
       formValues.first_name.length < 2 ||
       formValues.last_name.length < 2 ||
-      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-        formValues.email
-      ) ||
-      formValues.password !== formValues.confirm_password
+      !emailRegex.test(formValues.email) ||
+      !passwordRegex.test(formValues.password) ||
+      formValues.confirm_password !== formValues.password
     ) {
       return;
     }
