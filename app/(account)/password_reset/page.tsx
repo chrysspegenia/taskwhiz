@@ -1,7 +1,20 @@
 "use client";
 import MainHeader from "@/components/MainHeader";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
+import { API_URL } from "@/lib/constants";
+import { useMutation } from "@tanstack/react-query";
+
+type UserPasswordParams = {
+  password: string;
+  password_confirmation: string;
+};
+
+type RegisterResponse = {
+  success: boolean;
+  message?: string;
+  data?: any;
+};
 
 export default function PasswordResetPage() {
   const searchParams = useSearchParams();
@@ -25,6 +38,40 @@ export default function PasswordResetPage() {
   useEffect(() => {
     console.log(resetPasswordToken);
   }, [resetPasswordToken]);
+
+  const { mutate, isPending, isSuccess } = useMutation<
+    RegisterResponse,
+    Error,
+    UserPasswordParams
+  >({
+    mutationFn: async (formValues: UserPasswordParams) => {
+      const response = await fetch(`${API_URL}/password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user: {
+            reset_password_token: resetPasswordToken,
+            password: formValues.password,
+            password_confirmation: formValues.password_confirmation,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          "We couldn't find an account associated with that email address. Please double-check the email and try again."
+        );
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      console.log("Succesfully changed password");
+    },
+    onError: (error: Error) => {
+      console.log(error.message || "An error occurred. Please try again.");
+    },
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -52,13 +99,34 @@ export default function PasswordResetPage() {
     setIsPasswordMatch(passwordConfirm === formValues.password);
   };
 
+  const handleSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const passwordRegex =
+        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+      if (!passwordRegex.test(formValues.password)) {
+        console.log("Password does not meet requirements.");
+        return;
+      }
+
+      if (formValues.password_confirmation !== formValues.password) {
+        console.log("Passwords do not match");
+        return;
+      }
+
+      mutate(formValues);
+    },
+    [formValues, mutate]
+  );
+
   return (
     <main className="grid grid-cols-1 grid-rows-[8%_1fr]  min-h-screen bg-gray-100 text-gray-700">
       <MainHeader />
 
       <section className="w-full flex items-center justify-center p-8 bg-gray-300">
         <form
-          action={""}
+          onSubmit={handleSubmit}
           className="flex flex-col gap-3 w-full md:w-3/4 lg:w-1/3 bg-gray-100 p-6 rounded-lg"
         >
           <h1 className="text-center text-md md:text-left md:text-2xl font-bold text-gray-700 border-b-2 border-gray-500 pb-4">
@@ -189,12 +257,16 @@ export default function PasswordResetPage() {
           </div>
           <button
             type="submit"
-            // disabled={}
+            disabled={isPending}
             className={`w-full px-4 py-2 rounded-lg text-white font-bold ${
-              "" ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+              isPending ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
             }`}
           >
-            Submit
+            {isPending ? (
+              <l-mirage size="60" speed="2.5" color="rgb(37 99 235)"></l-mirage>
+            ) : (
+              "Submit"
+            )}
           </button>
         </form>
       </section>
