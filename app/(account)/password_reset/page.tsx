@@ -4,6 +4,9 @@ import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { API_URL } from "@/lib/constants";
 import { useMutation } from "@tanstack/react-query";
+import { mirage } from "ldrs";
+
+mirage.register();
 
 type UserPasswordParams = {
   password: string;
