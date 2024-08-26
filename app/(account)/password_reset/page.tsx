@@ -46,7 +46,7 @@ export default function PasswordResetPage() {
   >({
     mutationFn: async (formValues: UserPasswordParams) => {
       const response = await fetch(`${API_URL}/password`, {
-        method: "POST",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           user: {
