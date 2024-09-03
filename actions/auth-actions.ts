@@ -1,5 +1,6 @@
 "use server";
 import { API_URL } from "@/lib/constants";
+import { cookies } from "next/headers";
 
 type LoginState = {
   data?: {
@@ -50,6 +51,26 @@ export async function loginUserAction(
 
     const data = await response.json();
     const authorization = response.headers.get("Authorization") || undefined;
+
+    if (authorization) {
+      cookies().set("token", authorization, { httpOnly: true, secure: true });
+    }
+
+    cookies().set("user_id", data.user.id, { httpOnly: true, secure: true });
+    cookies().set("email", data.user.email, { httpOnly: true, secure: true });
+    cookies().set("first_name", data.user.first_name, {
+      httpOnly: true,
+      secure: true,
+    });
+    cookies().set("last_name", data.user.last_name, {
+      httpOnly: true,
+      secure: true,
+    });
+
+    const allCookies = cookies().getAll();
+    allCookies.forEach((cookie) => {
+      console.log(`${cookie.name}: ${cookie.value}`);
+    });
 
     return { data, authorization };
   } catch (error: unknown) {
